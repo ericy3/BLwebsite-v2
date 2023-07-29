@@ -12,6 +12,7 @@ import Exec from './pages/Exec';
 import Championship from './pages/Championship';
 import FAQ from './pages/FAQ'
 import Gallery from './pages/Gallery'
+import FileUpload from './pages/FileUpload';
 
 //fonts
 import './fonts/LEMONMILK-Regular.otf';
@@ -22,6 +23,7 @@ import './fonts/LEMONMILK-Medium.otf';
 import './fonts/LEMONMILK-MediumItalic.otf';
 import './fonts/LEMONMILK-Bold.otf';
 import './fonts/LEMONMILK-BoldItalic.otf';
+
 
 
 // ReactDOM.render(
@@ -43,6 +45,7 @@ ReactDOM.render(
       <Route path="/shop" element={<Shop />} />
       <Route path="/FAQ" element={<FAQ />} />
       <Route path="/gallery" element={<Gallery />} />
+      <Route path="/fileupload" element={<FileUpload />} />
     </Routes>
   </Router>,
   document.getElementById('root')

@@ -44,6 +44,7 @@ function Nav() {
             <NavItem name={"Shop"} to={"/shop"}></NavItem> 
             {/**Adding gallery onto NavBar */}
             <NavItem name={"Gallery"} to={"/gallery"}></NavItem>
+            <NavItem name={"File Upload"} to={"/fileupload"}></NavItem>
 
             <a href='https://tinyurl.com/BLDisco' target="_blank" rel="noopener noreferrer">
                 <NavItemIcon></NavItemIcon>
