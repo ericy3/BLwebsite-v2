@@ -7,9 +7,18 @@ from pydantic import BaseModel
 import uvicorn
 from fastapi import FastAPI, UploadFile
 
+from fastapi.middleware.cors import CORSMiddleware
+
 S3_BUCKET_NAME = "berkeleylegendsphotos"
 
 app = FastAPI(debug=True)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 class PhotoModel(BaseModel):
     id: int
@@ -21,7 +30,7 @@ class PhotoModel(BaseModel):
 async def status():
     return "Hello World!" 
 
-@app.get("/photos", response_model=List(PhotoModel))
+@app.get("/photos", response_model=List[PhotoModel])
 async def get_all_photos():
     # connect to database
     connection = psycopg2.connect(
@@ -53,8 +62,8 @@ async def add_photo(file: UploadFile):
     print(file.content_type)
 
     # upload file to AWS S3
-    s3 = boto3.resource("s3")
-    bucket = s3.BUCKET(S3_BUCKET_NAME)
+    s3 = boto3.resource('s3')
+    bucket = s3.Bucket(S3_BUCKET_NAME)
     #public read means everyone can see the photo not always best in production but most stuff on website will be public regardless
     bucket.upload_fileobj(file.file, file.filename, ExtraArgs={'ACL': 'public-read'})
     
