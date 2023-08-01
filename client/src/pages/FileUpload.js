@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import Nav from '../components/navbar/Nav.js';
 import Footer from '../components/Footer'
 import './FileUpload.css';
@@ -25,28 +25,43 @@ import { FileUploader } from "react-drag-drop-files";
 
 
 function FileUpload(props) {
-    // const [file, setFile] = useState(null);
-    // const handleChange = (file) => {
-    //   setFile(file);
-    // };
-    // console.log(file);
     const [allFiles, setFiles] = useState([]);
+    const [selectedFile, setSelectedFile] = useState(null);
+    const [isSelected, setIsSelected] = useState(false);
+    const [uploadSuccessful, setUploadSuccessful] = useState(false);
+    const [showLoading, setShowLoading] = useState(false);
+
+    useEffect(() => {
+        fetch("http://127.0.0.1:8000/photos")
+        .then((response) => response.json())
+        .then((data) => {
+            console.log(data);
+            setFiles(data);
+        })
+    }, [uploadSuccessful]);
+
 
     const fileSelected = (e) => {
-        setFiles(e.target.files)
+        setSelectedFile(e.target.files);
+        setIsSelected(true);
     }
 
-    const uploadFiles = () => {
-        const formData = new FormData()
-        for (let i = 0; i < allFiles.length; i++) {
-            formData.append(`image[${i}]`, allFiles[i])
-        }
+    const onFileUpload = e => {
+        setShowLoading(true);
+        const formData = new FormData();
+        formData.append("file", selectedFile, selectedFile.name);
+        fetch("http://127.0.0.1:8000/photos", {
+            method: "POST",
+            body: formData
+        })
+        .then((response) => response.json())
+        .then((data) => {
+            setUploadSuccessful(!uploadSuccessful);
+            setShowLoading(false);
+        })
     }
 
 
-    // const addFile = (file) => {
-    //     setFiles([...files, file])
-    // }
     return (
         <div className = 'body'>
             <Nav></Nav>
@@ -55,8 +70,13 @@ function FileUpload(props) {
                     <input 
                     type='file' 
                     onChange={fileSelected}
-                    multiple
                     />
+                    <button 
+                    onClick={onFileUpload}
+                    isDisabled={!isSelected}
+                    >
+                    Upload
+                    </button>
                     {/* <FileUploader handleChange={handleChange} name="file" types={fileTypes} multiple /> */}
                 </div>
                 {/* <UploadedFileNames allfiles={allFiles}></UploadedFileNames> */}
